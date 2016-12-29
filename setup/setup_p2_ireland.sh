@@ -16,14 +16,13 @@ then
 fi
 
 aws ec2 authorize-security-group-ingress --group-id $securityGroupId --protocol tcp --port 8888-8898 --cidr 0.0.0.0/0
-
 if [ ! -f ~/.ssh/aws-key.pem ] 
 then
 	aws ec2 create-key-pair --key-name aws-key --query 'KeyMaterial' --output text > ~/.ssh/aws-key.pem
 	chmod 400 ~/.ssh/aws-key.pem
 fi
 
-export instanceId=`aws ec2 run-instances --image-id ami-bc508adc --count 1 --instance-type p2.xlarge --key-name aws-key --security-group-ids $securityGroupId --subnet-id $subnetId --associate-public-ip-address --block-device-mapping "[ { \"DeviceName\": \"/dev/sda1\", \"Ebs\": { \"VolumeSize\": 128, \"VolumeType\": \"gp2\" } } ]" --query 'Instances[0].InstanceId' --output text`
+export instanceId=`aws ec2 run-instances --image-id ami-b43d1ec7 --count 1 --instance-type p2.xlarge --key-name aws-key --security-group-ids $securityGroupId --subnet-id $subnetId --associate-public-ip-address --block-device-mapping "[ { \"DeviceName\": \"/dev/sda1\", \"Ebs\": { \"VolumeSize\": 128, \"VolumeType\": \"gp2\" } } ]" --query 'Instances[0].InstanceId' --output text`
 export allocAddr=`aws ec2 allocate-address --domain vpc --query 'AllocationId' --output text`
 
 echo Waiting for instance start...
